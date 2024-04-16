@@ -42,7 +42,7 @@ jobs:
 
 
           - name: Run Tests
-            run: pytest --rootdir=.
+            run: poetry run pytest --rootdir=.
 
     # build_and_upload_artifcats:
     #     needs: test
