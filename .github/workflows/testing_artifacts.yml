@@ -28,7 +28,8 @@ jobs:
           
           - name: Show Folder Content
             run: ls -lah
-        
+          - name: Show Home Folder Content
+            run: cd ~ && ls -lah
 
 
     #       - name: Install Dep
