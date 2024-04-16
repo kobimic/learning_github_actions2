@@ -44,7 +44,7 @@ jobs:
             - id: step1
               run: echo "test=hello" >> "$GITHUB_OUTPUT"
             - id: my_id
-              run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUPUT"
+              run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUTPUT"
             
             - name: upload artifacts
               uses: actions/upload-artifact@v4
