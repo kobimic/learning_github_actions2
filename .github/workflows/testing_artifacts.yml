@@ -20,6 +20,9 @@ jobs:
             run: pytest --rootdir=.
 
     build_and_upload_artifcats:
+        needs: test
+        outputs:
+            my_sha1: ${{ steps.my_id.outputs.my_sha }}
         runs-on: ubuntu-latest
         steps:
             - name: clone the repo
@@ -36,18 +39,22 @@ jobs:
               run: poetry install
             - name: build
               run: poetry build
-            - name: upload artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                name: dist_folder
-                path: | # this is for multiple options
-                  dist 
-                  pyproject.toml
-                  poetry.lock
+            - name: get_whl_sha
+              id: my_id
+              run: echo my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'` >> $GITHUB_OUPUT
+            
+            # - name: upload artifacts
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #     name: dist_folder
+            #     path: | # this is for multiple options
+            #       dist 
+            #       pyproject.toml
+            #       poetry.lock
 
 
 
-    download_artifcats:
+    using_outputs:
         needs: build_and_upload_artifcats
         runs-on: ubuntu-latest        
         steps:
@@ -57,5 +64,7 @@ jobs:
                 name: dist_folder
             - name: show content
               run: ls -lah
+            - name: output filenames
+              run: echo "${{ needs.build_and_upload_artifcats.outputs.my_sha1 }}"
             
 
