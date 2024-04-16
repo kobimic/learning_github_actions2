@@ -11,14 +11,14 @@ jobs:
             with:
               python-version: '3.10' 
 
-    # setup a cache for the poetry install
-        #   - name: cache poetry install
-        #     uses: actions/cache@v4
-        #     with:
-        #       path: ~/.local
-        #       key: poetry-1.1.12
+# setup a cache for the poetry install
+          - name: cache poetry install
+            uses: actions/cache@v4
+            with:
+              path: ~/.local
+              key: poetry-1.8.2
 
-
+# install poetry
           - name: Install Poetry
             uses: snok/install-poetry@v1
             with:
@@ -26,12 +26,7 @@ jobs:
                 virtualenvs-create: true
                 virtualenvs-in-project: true
           
-          - name: Show Folder Content
-            run: ls -lah
-          - name: Show Home Folder Content
-            run: ls -lah ~
-    
-    # setup a cahe for the dependencies
+# setup a cache for the dependencies
           - name: cache deps
             id: cache-deps
             uses: actions/cache@v4
@@ -39,14 +34,12 @@ jobs:
               path: .venv
               key: deps-${{ hashFiles('**/poetry.lock') }}
 
+# install the dependencies
           - name: Install Dep
             run: poetry install --no-interaction --no-root
             if: steps.cache-deps.outputs.cache-hit != 'true'
 
-          - name: Show Folder Content After
-            run: ls -lah
-          - name: Show Home Folder Content After
-            run: ls -lah ~
+
 
     #       - name: Run Tests
     #         run: pytest --rootdir=.
