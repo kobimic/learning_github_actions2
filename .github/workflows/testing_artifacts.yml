@@ -39,18 +39,19 @@ jobs:
               run: poetry install
             - name: build
               run: poetry build
+
             - name: get_whl_sha
               id: my_id
-              run: echo my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'` >> $GITHUB_OUPUT
+              run: echo my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'` >> "$GITHUB_OUPUT"
             
-            # - name: upload artifacts
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: dist_folder
-            #     path: | # this is for multiple options
-            #       dist 
-            #       pyproject.toml
-            #       poetry.lock
+            - name: upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: dist_folder
+                path: | # this is for multiple options
+                  dist 
+                  pyproject.toml
+                  poetry.lock
 
 
 
