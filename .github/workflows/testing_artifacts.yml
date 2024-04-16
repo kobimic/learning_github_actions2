@@ -22,6 +22,7 @@ jobs:
     build_and_upload_artifcats:
         needs: test
         outputs:
+            output1: ${{ steps.step1.outputs.test }}
             my_sha1: ${{ steps.my_id.outputs.my_sha }}
         runs-on: ubuntu-latest
         steps:
@@ -40,8 +41,9 @@ jobs:
             - name: build
               run: poetry build
 
-            - name: get_whl_sha
-              id: my_id
+            - id: step1
+              run: echo "test=hello" >> "$GITHUB_OUTPUT"
+            - id: my_id
               run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUPUT"
             
             - name: upload artifacts
