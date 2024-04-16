@@ -41,8 +41,8 @@ jobs:
 
 
 
-    #       - name: Run Tests
-    #         run: pytest --rootdir=.
+          - name: Run Tests
+            run: pytest --rootdir=.
 
     # build_and_upload_artifcats:
     #     needs: test
