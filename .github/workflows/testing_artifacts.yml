@@ -1,7 +1,19 @@
 name: My Artifacts
 on: push
+
+# global level
+env:
+	PGSQL_DB_NAME: my_main_db
+	DUMMY_VALUE: my_dummy_value
+
 jobs:
     test:
+    # only for job level
+				env:
+					PGSQL_DB_NAME: my_test_db
+					PGSQL_USERNAME: bla
+					PGSQL_PASSWORD: my_password
+					PGSQL_PORT: 8888    
         runs-on: ubuntu-latest
         steps:
           - name: clone the repo
@@ -43,6 +55,11 @@ jobs:
 
           - name: Run Tests
             run: poetry run pytest --rootdir=.
+            
+          - name: Dummy echo
+            run: |
+              echo "my db name is $PGSQL_DB_NAME and it is tha same as ${{ env.PGSQL_DB_NAME }}"
+              echo "this is a workflow level dummy env: $DUMMY_VALUE or ${{ env.DUMMY_VALUE }}"
 
     # build_and_upload_artifcats:
     #     needs: test
