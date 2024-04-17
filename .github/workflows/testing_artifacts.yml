@@ -3,17 +3,17 @@ on: push
 
 # global level
 env:
-	PGSQL_DB_NAME: my_main_db
-	DUMMY_VALUE: my_dummy_value
+    PGSQL_DB_NAME: my_main_db
+    DUMMY_VALUE: my_dummy_value
 
 jobs:
     test:
     # only for job level
-				env:
-					PGSQL_DB_NAME: my_test_db
-					PGSQL_USERNAME: bla
-					PGSQL_PASSWORD: my_password
-					PGSQL_PORT: 8888    
+        env:
+            PGSQL_DB_NAME: my_test_db
+            PGSQL_USERNAME: bla
+            PGSQL_PASSWORD: my_password
+            PGSQL_PORT: 8888    
         runs-on: ubuntu-latest
         steps:
           - name: clone the repo
