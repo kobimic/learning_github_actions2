@@ -8,6 +8,7 @@ env:
 
 jobs:
     test:
+        environment: testing_env
     # only for job level
         env:
             PGSQL_DB_NAME: ${{ secrets.PGSQL_DB_NAME }}
@@ -50,8 +51,6 @@ jobs:
           - name: Install Dep
             run: poetry install --no-interaction --no-root
             if: steps.cache-deps.outputs.cache-hit != 'true'
-
-
 
           - name: Run Tests
             run: poetry run pytest --rootdir=.
