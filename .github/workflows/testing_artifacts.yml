@@ -3,16 +3,16 @@ on: push
 
 # global level
 env:
-    PGSQL_DB_NAME: my_main_db
-    DUMMY_VALUE: my_dummy_value
+    PGSQL_DB_NAME: ${{ secrets.PGSQL_DB_NAME }}
+    DUMMY_VALUE: ${{ secrets.DUMMY_VALUE }}
 
 jobs:
     test:
     # only for job level
         env:
-            PGSQL_DB_NAME: my_test_db
-            PGSQL_USERNAME: bla
-            PGSQL_PASSWORD: my_password
+            PGSQL_DB_NAME: ${{ secrets.PGSQL_DB_NAME }}
+            PGSQL_USERNAME: ${{ secrets.PGSQL_USERNAME }}
+            PGSQL_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
             PGSQL_PORT: 8888    
         runs-on: ubuntu-latest
         steps:
