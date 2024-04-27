@@ -102,6 +102,9 @@ jobs:
             run: poetry install --no-interaction --no-root
             if: steps.cache-deps.outputs.cache-hit != 'true'
 
+          - name: build
+            run: poetry build
+
           - id: step1
             run: echo "test=hello" >> "$GITHUB_OUTPUT"
           - id: my_id
