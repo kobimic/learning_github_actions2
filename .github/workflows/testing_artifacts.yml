@@ -50,4 +50,4 @@ jobs:
 
           - name: the last step
             run: |
-              echo "Hello from the last step"              
+              echo "Hello from the last"              
