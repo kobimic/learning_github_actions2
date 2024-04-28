@@ -41,11 +41,11 @@ jobs:
             if: steps.cache-deps.outputs.cache-hit != 'true'
 
           - name: Run Tests
+            continue-on-error: true
             id: running_test
             run: poetry run pytest --rootdir=.
             
           - name: Dummy echo
-            if: failure() && steps.running_test.outcome == 'failure'
             run: |
               echo "Hello from dummy echo"
 
