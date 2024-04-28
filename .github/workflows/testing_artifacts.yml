@@ -1,20 +1,8 @@
 name: My Artifacts
 on: push
 
-# global level
-env:
-    PGSQL_DB_NAME: ${{ secrets.PGSQL_DB_NAME }}
-    DUMMY_VALUE: ${{ secrets.DUMMY_VALUE }}
-
 jobs:
     test:
-        environment: testing_env
-    # only for job level
-        env:
-            PGSQL_DB_NAME: ${{ secrets.PGSQL_DB_NAME }}
-            PGSQL_USERNAME: ${{ secrets.PGSQL_USERNAME }}
-            PGSQL_PASSWORD: ${{ secrets.PGSQL_PASSWORD }}
-            PGSQL_PORT: 8888    
         runs-on: ubuntu-latest
         steps:
           - name: clone the repo
@@ -53,85 +41,13 @@ jobs:
             if: steps.cache-deps.outputs.cache-hit != 'true'
 
           - name: Run Tests
+            id: running_test
             run: poetry run pytest --rootdir=.
             
           - name: Dummy echo
             run: |
-              echo "my db name is $PGSQL_DB_NAME and it is tha same as ${{ env.PGSQL_DB_NAME }}"
-              echo "this is a workflow level dummy env: $DUMMY_VALUE or ${{ env.DUMMY_VALUE }}"
+              echo "Hello from dummy echo"
 
-    build_and_upload_artifcats:
-        needs: test
-        outputs:
-            output1: ${{ steps.step1.outputs.test }}
-            my_sha1: ${{ steps.my_id.outputs.my_sha }}
-        runs-on: ubuntu-latest
-        steps:
-          - name: clone the repo
-            uses: actions/checkout@v4
-          - name: install python
-            uses: actions/setup-python@v5
-            with:
-              python-version: '3.10' 
-
-# setup a cache for the poetry install
-          - name: cache poetry install
-            uses: actions/cache@v4
-            with:
-              path: ~/.local
-              key: poetry-1.8.2
-
-# install poetry
-          - name: Install Poetry
-            uses: snok/install-poetry@v1
-            with:
-                version: 1.8.2
-                virtualenvs-create: true
-                virtualenvs-in-project: true
-          
-# setup a cache for the dependencies
-          - name: cache deps
-            id: cache-deps
-            uses: actions/cache@v4
-            with:
-              path: .venv
-              key: deps-${{ hashFiles('**/poetry.lock') }}
-
-# install the dependencies
-          - name: Install Dep
-            run: poetry install --no-interaction --no-root
-            if: steps.cache-deps.outputs.cache-hit != 'true'
-
-          - name: build
-            run: poetry build
-
-          - id: step1
-            run: echo "test=hello" >> "$GITHUB_OUTPUT"
-          - id: my_id
-            run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUTPUT"
-          
-          - name: upload artifacts
-            uses: actions/upload-artifact@v4
-            with:
-              name: dist_folder
-              path: | # this is for multiple options
-                dist 
-                pyproject.toml
-                poetry.lock
-
-
-
-    using_outputs:
-        needs: build_and_upload_artifcats
-        runs-on: ubuntu-latest        
-        steps:
-            - name: download artifacts
-              uses: actions/download-artifact@v4
-              with:
-                name: dist_folder
-            - name: show content
-              run: ls -lah
-            - name: output filenames
-              run: echo "${{ needs.build_and_upload_artifcats.outputs.my_sha1 }}"
-            
-
+          - name: the last step
+            run: |
+              echo "Hello from the last step"              
