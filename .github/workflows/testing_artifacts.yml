@@ -54,6 +54,7 @@ jobs:
               echo "Hello from the last"              
 
     build_and_upload_artifcats:
+      if: failure()
       needs: test
       outputs:
           output1: ${{ steps.step1.outputs.test }}
