@@ -45,6 +45,7 @@ jobs:
             run: poetry run pytest --rootdir=.
             
           - name: Dummy echo
+            if: steps.running_test.outcome == 'failure'
             run: |
               echo "Hello from dummy echo"
 
