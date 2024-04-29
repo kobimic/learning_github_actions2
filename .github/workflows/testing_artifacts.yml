@@ -3,14 +3,18 @@ on: push
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            python_version: ['3.10','3.8']
+            os_version: [ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os_version }}
         steps:
           - name: clone the repo
             uses: actions/checkout@v4
           - name: install python
             uses: actions/setup-python@v5
             with:
-              python-version: '3.10' 
+              python-version: ${{ matrix.python_version }}
 
 # setup a cache for the poetry install
           - name: cache poetry install
@@ -53,61 +57,61 @@ jobs:
             run: |
               echo "Hello from the last"              
 
-    build_and_upload_artifcats:
-      needs: test
-      outputs:
-          output1: ${{ steps.step1.outputs.test }}
-          my_sha1: ${{ steps.my_id.outputs.my_sha }}
-      runs-on: ubuntu-latest
-      steps:
-        - name: clone the repo
-          uses: actions/checkout@v4
-        - name: install python
-          uses: actions/setup-python@v5
-          with:
-            python-version: '3.10' 
+#     build_and_upload_artifcats:
+#       needs: test
+#       outputs:
+#           output1: ${{ steps.step1.outputs.test }}
+#           my_sha1: ${{ steps.my_id.outputs.my_sha }}
+#       runs-on: ubuntu-latest
+#       steps:
+#         - name: clone the repo
+#           uses: actions/checkout@v4
+#         - name: install python
+#           uses: actions/setup-python@v5
+#           with:
+#             python-version: '3.10' 
 
-# setup a cache for the poetry install
-        - name: cache poetry install
-          uses: actions/cache@v4
-          with:
-            path: ~/.local
-            key: poetry-1.8.2
+# # setup a cache for the poetry install
+#         - name: cache poetry install
+#           uses: actions/cache@v4
+#           with:
+#             path: ~/.local
+#             key: poetry-1.8.2
 
-# install poetry
-        - name: Install Poetry
-          uses: snok/install-poetry@v1
-          with:
-              version: 1.8.2
-              virtualenvs-create: true
-              virtualenvs-in-project: true
+# # install poetry
+#         - name: Install Poetry
+#           uses: snok/install-poetry@v1
+#           with:
+#               version: 1.8.2
+#               virtualenvs-create: true
+#               virtualenvs-in-project: true
         
-# setup a cache for the dependencies
-        - name: cache deps
-          id: cache-deps
-          uses: actions/cache@v4
-          with:
-            path: .venv
-            key: deps-${{ hashFiles('**/poetry.lock') }}
+# # setup a cache for the dependencies
+#         - name: cache deps
+#           id: cache-deps
+#           uses: actions/cache@v4
+#           with:
+#             path: .venv
+#             key: deps-${{ hashFiles('**/poetry.lock') }}
 
-# install the dependencies
-        - name: Install Dep
-          run: poetry install --no-interaction --no-root
-          if: steps.cache-deps.outputs.cache-hit != 'true'
+# # install the dependencies
+#         - name: Install Dep
+#           run: poetry install --no-interaction --no-root
+#           if: steps.cache-deps.outputs.cache-hit != 'true'
 
-        - name: build
-          run: poetry build
+#         - name: build
+#           run: poetry build
 
-        - id: step1
-          run: echo "test=hello" >> "$GITHUB_OUTPUT"
-        - id: my_id
-          run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUTPUT"
+#         - id: step1
+#           run: echo "test=hello" >> "$GITHUB_OUTPUT"
+#         - id: my_id
+#           run: echo "my_sha=`find dist/*.whl -type f -execdir sha256sum '{}' ';'|awk '{print $1}'`" >> "$GITHUB_OUTPUT"
         
-        - name: upload artifacts
-          uses: actions/upload-artifact@v4
-          with:
-            name: dist_folder
-            path: | # this is for multiple options
-              dist 
-              pyproject.toml
-              poetry.lock
+#         - name: upload artifacts
+#           uses: actions/upload-artifact@v4
+#           with:
+#             name: dist_folder
+#             path: | # this is for multiple options
+#               dist 
+#               pyproject.toml
+#               poetry.lock
