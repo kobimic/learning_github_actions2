@@ -1,4 +1,4 @@
-name: My Artifacts
+name: Use Reusable Workflow
 on: push
 
 jobs:
