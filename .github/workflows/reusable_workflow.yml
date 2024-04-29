@@ -10,9 +10,17 @@ on:
     secrets:
       my_secret_1:
         required: true
+    outputs:
+      my_result:
+        description: this is my output
+        value: ${{ jobs.my_common_reusable_job.outputs.my_inner_results }}
+          
 
-jobs:
+
+jobs:      
     my_common_reusable_job:
+        outputs:
+          my_inner_results: ${{ steps.setting_result.outputs.my_step_result }}
         runs-on: ubuntu-latest
         steps:
           - name: Some Dummy Step
@@ -21,3 +29,6 @@ jobs:
           - name: Some Secret Step
             run: |
                 echo "Running some secret step: ${{ secrets.my_secret_1 }}"
+          - name: Setting an output step
+            id: setting_result
+            run: echo "::set-output name=my_step_result::blabla"
