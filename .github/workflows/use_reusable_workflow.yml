@@ -58,6 +58,8 @@ jobs:
       uses: ./.github/workflows/reusable_workflow.yml
       with:
         my_arg_1: this is the passed data from the other side
+      secrets:
+        my_secret_1: this is the secret from the caller
 
     report:
       needs: deploy

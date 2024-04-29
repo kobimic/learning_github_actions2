@@ -7,6 +7,9 @@ on:
         required: false
         default: this is the default
         type: string
+    secrets:
+      my_secret_1:
+        required: true
 
 jobs:
     my_common_reusable_job:
@@ -15,4 +18,6 @@ jobs:
           - name: Some Dummy Step
             run: |
               echo "Running some dummy step: ${{ inputs.my_arg_1 }}"
-
+          - name: Some Secret Step
+            run: |
+                echo "Running some secret step: ${{ secrets.my_secret_1 }}"
