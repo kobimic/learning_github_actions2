@@ -2,7 +2,7 @@ name: Reusable Workflow
 on: workflow_call
 
 jobs:
-    test:
+    my_common_reusable_job:
         runs-on: ubuntu-latest
         steps:
           - name: Some Dummy Step
