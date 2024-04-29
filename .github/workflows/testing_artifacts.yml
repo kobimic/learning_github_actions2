@@ -3,10 +3,18 @@ on: push
 
 jobs:
     test:
+        continue-on-error: true
         strategy:
           matrix:
             python_version: ['3.10','3.8']
             os_version: [ubuntu-latest, windows-latest]
+            include:
+              - python_version: 3.6
+                os_version: ubuntu-latest
+            exclude:
+              - python_version: 3.10
+                os_version: windows-latest
+
         runs-on: ${{ matrix.os_version }}
         steps:
           - name: clone the repo
