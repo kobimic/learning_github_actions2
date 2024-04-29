@@ -1,0 +1,68 @@
+name: My Artifacts
+on: push
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+          - name: clone the repo
+            uses: actions/checkout@v4
+          - name: install python
+            uses: actions/setup-python@v5
+            with:
+              python-version: 3.10
+
+          # setup a cache for the poetry install
+          - name: cache poetry install
+            uses: actions/cache@v4
+            with:
+              path: ~/.local
+              key: poetry-1.8.2
+
+          # install poetry
+          - name: Install Poetry
+            uses: snok/install-poetry@v1
+            with:
+                version: 1.8.2
+                virtualenvs-create: true
+                virtualenvs-in-project: true
+          
+          # setup a cache for the dependencies
+          - name: cache deps
+            id: cache-deps
+            uses: actions/cache@v4
+            with:
+              path: .venv
+              key: deps-${{ hashFiles('**/poetry.lock') }}
+
+          # install the dependencies
+          - name: Install Dep
+            run: poetry install --no-interaction --no-root
+            if: steps.cache-deps.outputs.cache-hit != 'true'
+
+          - name: Run Tests
+            continue-on-error: true
+            id: running_test
+            run: poetry run pytest --rootdir=.
+            
+          - name: Dummy echo
+            run: |
+              echo "Hello from dummy echo"
+
+          - name: the last step
+            run: |
+              echo "Hello from the last"              
+
+    deploy:
+      needs: test
+      uses: ./.github/workflows/reusable_workflow.yml
+
+    report:
+      needs: deploy
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dummy deploy step
+          run: 
+            echo "Hello from dummy deploy echo"
+
+

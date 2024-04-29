@@ -1,0 +1,10 @@
+name: My Artifacts
+on: workflow_call
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Some Dummy Step
+            run: echo "Running some dummy step"
+
